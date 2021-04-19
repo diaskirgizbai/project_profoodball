@@ -209,3 +209,4 @@ parsing_top_assist(url_top_assist_laliga, 'laliga')
 parsing_top_assist(url_top_assist_seriaA, 'seriaA')
 parsing_top_assist(url_top_assist_bundes, 'bundesliga')
 parsing_top_assist(url_top_assist_ligue1, 'ligue1')
+# проверка
