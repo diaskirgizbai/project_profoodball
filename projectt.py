@@ -111,3 +111,101 @@ parsing_scorers(url_top_scorers_laliga,'laliga')
 parsing_scorers(url_top_scorers_seriaA,'seriaA')
 parsing_scorers(url_top_scorers_bundes,'bundesliga')
 parsing_scorers(url_top_scorers_ligue1,'ligue1')
+
+
+
+# PARSING CALENDAR
+url_calendar_laliga = 'https://www.sport-express.ru/football/L/foreign/spain/laleague/2020-2021/calendar/tours/'
+url_calendar_epl = 'https://www.sport-express.ru/football/L/foreign/england/premier/2020-2021/calendar/tours/'
+url_calendar_seriaA = 'https://www.sport-express.ru/football/L/foreign/italy/seriaa/2020-2021/calendar/tours/'
+url_calendar_bundes = 'https://www.sport-express.ru/football/L/foreign/german/bundes1/2020-2021/calendar/tours/'
+url_calendar_ligue1 = 'https://www.sport-express.ru/football/L/foreign/france/league1/2020-2021/calendar/tours/'
+
+
+def parsing_calendar(url, league_name):
+    tur = []
+    team1 = []
+    team2 = []
+    score = []
+    a = 0
+    r = urllib.request.urlopen(url)
+    soup = BeautifulSoup(r, 'html.parser')
+    data1 = soup.find_all('span', class_='link-underline')
+    for x in data1:
+        a = a+1
+        if a % 2 == 1:
+            team1.append(x.text.strip())
+        if a % 2 == 0:
+            team2.append(x.text.strip())
+    data2 = soup.find_all('p', class_='score_time')
+    for x in data2:
+        score.append(x.text.strip())
+    for x in range(len(team1)-len(score)):
+        score.append('---')
+    if len(team1) == 306:
+        b = ((len(team1))/9)+1
+        for x in range(1, int(b)):
+            for y in range(9):
+                tur.append(x)
+    else:
+        b = (len(team1)/10)+1
+        for x in range(1, int(b)):
+            for y in range(10):
+                tur.append(x)
+
+    with open("calendar_" + league_name + ".csv", 'w+', newline='') as file:
+        column_names = ['TUR', 'TEAM1', 'TEAM2', 'SCORE']
+        wr = csv.DictWriter(file, fieldnames=column_names)
+        wr.writerow({'TUR': 'TUR', 'TEAM1': 'TEAM1', 'TEAM2': 'TEAM2', 'SCORE': 'SCORE'})
+        for aa in range(len(tur)):
+            wr.writerow({'TUR': tur[aa], 'TEAM1': str(team1[aa]), 'TEAM2': str(team2[aa]), 'SCORE': str(score[aa])})
+
+
+parsing_calendar(url_calendar_laliga, 'laliga')
+parsing_calendar(url_calendar_seriaA, 'seriaA')
+parsing_calendar(url_calendar_epl, 'epl')
+parsing_calendar(url_calendar_bundes, 'bundesliga')
+parsing_calendar(url_calendar_ligue1, 'ligue1')
+
+# PARSING TOP ASSIST
+url_top_assist_epl = 'https://www.bbc.com/sport/football/premier-league/top-scorers/assists'
+url_top_assist_laliga = 'https://www.bbc.com/sport/football/spanish-la-liga/top-scorers/assists'
+url_top_assist_seriaA = 'https://www.bbc.com/sport/football/italian-serie-a/top-scorers/assists'
+url_top_assist_bundes = 'https://www.bbc.com/sport/football/german-bundesliga/top-scorers/assists'
+url_top_assist_ligue1 = 'https://www.bbc.com/sport/football/french-ligue-one/top-scorers/assists'
+
+
+def parsing_top_assist(url, league_name):
+    name = []
+    assist = []
+    game = []
+    a = 0
+    r = urllib.request.urlopen(url)
+    soup = BeautifulSoup(r)
+    data1 = soup.find_all('span', class_='gs-u-vh@l')
+    for x in data1:
+        name.append(x.text.strip())
+    data2 = soup.find_all('td', class_='gs-o-table__cell gs-o-table__cell--right')
+    for x in data2:
+        a = a + 1
+        if a == 1:
+            assist.append(x.text.strip())
+        if a == 2:
+            pass
+        if a == 3:
+            game.append(x.text.strip())
+        if a == 3:
+            a = 0
+    with open("top_assists_" + league_name + ".csv", 'w+', newline='', encoding='utf-8') as file:
+        column_names = ['NAME', 'ASSIST', 'GAME']
+        wr = csv.DictWriter(file, fieldnames=column_names)
+        wr.writerow({'NAME': 'NAME', 'ASSIST': 'ASSIST', 'GAME': 'GAME'})
+        for aa in range(len(assist)):
+            wr.writerow({'NAME': str(name[aa]), 'ASSIST': str(assist[aa]), 'GAME': str(game[aa])})
+
+
+parsing_top_assist(url_top_assist_epl, 'epl')
+parsing_top_assist(url_top_assist_laliga, 'laliga')
+parsing_top_assist(url_top_assist_seriaA, 'seriaA')
+parsing_top_assist(url_top_assist_bundes, 'bundesliga')
+parsing_top_assist(url_top_assist_ligue1, 'ligue1')
