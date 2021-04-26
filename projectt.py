@@ -2,7 +2,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 import csv
 
-
+print('Выполняется обнавление данных. Подаждите')
 # PARSING TABLES
 url_epl = 'https://www.skysports.com/premier-league-table'
 url_laliga = 'https://www.skysports.com/la-liga-table'
@@ -54,7 +54,7 @@ def parsing_table(url,league_name):
       a=0
 
 
-  with open("table_"+league_name+".csv", 'w+', newline='' ) as file:
+  with open("table_"+league_name+".csv", 'w+', newline='', encoding='utf-8' ) as file:
     column_names=['№','TEAM','PL','W','D','L','F','A','PTS']
     wr = csv.DictWriter(file,fieldnames=column_names)
     wr.writerow({'№':'№','TEAM':'TEAM','PL':'PL','W':'W','D':'D','L':'L','F':'F','A':'A','PTS':'PTS'} ) # column names
@@ -153,7 +153,7 @@ def parsing_calendar(url, league_name):
             for y in range(10):
                 tur.append(x)
 
-    with open("calendar_" + league_name + ".csv", 'w+', newline='') as file:
+    with open("calendar_" + league_name + ".csv", 'w+', newline='', encoding='utf-8') as file:
         column_names = ['TUR', 'TEAM1', 'TEAM2', 'SCORE']
         wr = csv.DictWriter(file, fieldnames=column_names)
         wr.writerow({'TUR': 'TUR', 'TEAM1': 'TEAM1', 'TEAM2': 'TEAM2', 'SCORE': 'SCORE'})
@@ -181,7 +181,7 @@ def parsing_top_assist(url, league_name):
     game = []
     a = 0
     r = urllib.request.urlopen(url)
-    soup = BeautifulSoup(r)
+    soup = BeautifulSoup(r, 'html.parser')
     data1 = soup.find_all('span', class_='gs-u-vh@l')
     for x in data1:
         name.append(x.text.strip())
@@ -209,4 +209,102 @@ parsing_top_assist(url_top_assist_laliga, 'laliga')
 parsing_top_assist(url_top_assist_seriaA, 'seriaA')
 parsing_top_assist(url_top_assist_bundes, 'bundesliga')
 parsing_top_assist(url_top_assist_ligue1, 'ligue1')
-# проверка 3
+
+var = True
+while var:
+    def league():
+        print('>Таблица')
+        print('>Календарь')
+        print('>Статистика')
+        print('>Назад')
+
+
+    def start():
+        choose_league = input("Выберите лигу :")
+        if choose_league == 'la liga':
+            league()
+            League(choose_league).opiration()
+        elif choose_league == 'epl':
+            league()
+            League(choose_league).opiration()
+        elif choose_league == 'seria A':
+            league()
+            League(choose_league).opiration()
+        elif choose_league == 'bundesliga':
+            league()
+            League(choose_league).opiration()
+        elif choose_league == 'ligue 1':
+            league()
+            League(choose_league).opiration()
+        else:
+            print('Нет такой лиги')
+            start()
+
+
+    class League:
+        def __init__(self,name):
+            self.name = name
+
+        def check(self):
+            if self.name == 'la liga':
+                self.a = 'laliga'
+            elif self.name == 'epl':
+                self.a = 'epl'
+            elif self.name == 'seria A':
+                self.a = 'seriaA'
+            elif self.name == 'bundesliga':
+                self.a = 'bundesliga'
+            elif self.name == 'ligue 1':
+                self.a = 'ligue1'
+
+        def opiration(self):
+            opiration = input("Выберите операцию:")
+            if opiration == 'Таблица':
+                self.table()
+            elif opiration == 'Календарь':
+                self.calendar()
+            elif opiration == 'Статистика':
+                self.statistic()
+            elif opiration == 'Назад':
+                start()
+            else:
+                print('Операция неверно')
+                self.opiration()
+
+        def table(self):
+            if self.name == 'la liga':
+                pass
+            elif self.name == 'epl':
+                pass
+            elif self.name == 'seria A':
+                pass
+            elif self.name == 'bundesliga':
+                pass
+            elif self.name == 'ligue 1':
+                pass
+
+        def calendar(self):
+            if self.name == 'la liga':
+                pass
+            elif self.name == 'epl':
+                pass
+            elif self.name == 'seria A':
+                pass
+            elif self.name == 'bundesliga':
+                pass
+            elif self.name == 'ligue 1':
+                pass
+
+        def statistic(self):
+            if self.name == 'la liga':
+                pass
+            elif self.name == 'epl':
+                pass
+            elif self.name == 'seria A':
+                pass
+            elif self.name == 'bundesliga':
+                pass
+            elif self.name == 'ligue 1':
+               pass
+
+    start()
