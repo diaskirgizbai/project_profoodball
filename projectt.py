@@ -1,6 +1,9 @@
 import urllib.request
 from bs4 import BeautifulSoup
 import csv
+import pandas as pd
+from tkinter import *
+from tkinter import ttk
 
 print('Выполняется обнавление данных. Подаждите')
 # PARSING TABLES
@@ -210,101 +213,111 @@ parsing_top_assist(url_top_assist_seriaA, 'seriaA')
 parsing_top_assist(url_top_assist_bundes, 'bundesliga')
 parsing_top_assist(url_top_assist_ligue1, 'ligue1')
 
-var = True
-while var:
-    def league():
-        print('>Таблица')
-        print('>Календарь')
-        print('>Статистика')
-        print('>Назад')
 
+def start():
+    btn_table.place_forget()
+    btn_match.place_forget()
+    btn_statistic.place_forget()
+    btn_back.place_forget()
+    btn_start_laliga.place(x=290, y=115)
+    btn_start_seriaA.place(x=290, y=195)
+    btn_start_epl.place(x=290, y=275)
+    btn_start_ligue1.place(x=290, y=355)
+    btn_start_bundesliga.place(x=290, y=435)
+def laliga():
+    league = 'laliga'
+    ProFootball(league).opiration()
+def seriaA():
+    league = 'seriaA'
+    ProFootball(league).opiration()
+def epl():
+    league = 'epl'
+    ProFootball(league).opiration()
+def ligue1():
+    league = 'ligue1'
+    ProFootball(league).opiration()
+def bundesliga():
+    league = 'bundesliga'
+    ProFootball(league).opiration()
 
-    def start():
-        choose_league = input("Выберите лигу :")
-        if choose_league == 'la liga':
-            league()
-            League(choose_league).opiration()
-        elif choose_league == 'epl':
-            league()
-            League(choose_league).opiration()
-        elif choose_league == 'seria A':
-            league()
-            League(choose_league).opiration()
-        elif choose_league == 'bundesliga':
-            league()
-            League(choose_league).opiration()
-        elif choose_league == 'ligue 1':
-            league()
-            League(choose_league).opiration()
-        else:
-            print('Нет такой лиги')
-            start()
+class ProFootball:
+    def __init__(self, league):
+        self.league = league
 
+    def opiration(self):
+        btn_start_laliga.place_forget()
+        btn_start_seriaA.place_forget()
+        btn_start_epl.place_forget()
+        btn_start_ligue1.place_forget()
+        btn_start_bundesliga.place_forget()
+        btn_table.place(x=290, y=120)
+        btn_match.place(x=290, y=210)
+        btn_statistic.place(x=290, y=300)
+        btn_statistic.config(command=self.statistic)
+        btn_back.place(x=290, y=390)
 
-    class League:
-        def __init__(self,name):
-            self.name = name
+    def back(self):
+        lbl_statistic1.place_forget()
+        lbl_statistic2.place_forget()
+        btn_back_2.place_forget()
+        tv2.place_forget()
+        tv.place_forget()
+        self.opiration()
+        tv.delete(*tv.get_children())
+        tv2.delete(*tv2.get_children())
 
-        def check(self):
-            if self.name == 'la liga':
-                self.a = 'laliga'
-            elif self.name == 'epl':
-                self.a = 'epl'
-            elif self.name == 'seria A':
-                self.a = 'seriaA'
-            elif self.name == 'bundesliga':
-                self.a = 'bundesliga'
-            elif self.name == 'ligue 1':
-                self.a = 'ligue1'
+    def statistic(self):
+        a=0
+        btn_table.place_forget()
+        btn_match.place_forget()
+        btn_statistic.place_forget()
+        btn_back.place_forget()
+        lbl_statistic1.place(x=350, y=280)
+        lbl_statistic2.place(x=365, y=10)
+        btn_back_2.place(x=10, y=10)
+        with open('top_assists_'+self.league+'.csv') as file1:
+            for x in csv.reader(file1):
+                a = a+1
+                if a > 1:
+                    tv.insert('', 'end', values=x)
+        with open('top_scores_'+self.league+'.csv') as file2:
+            for x in csv.reader(file2):
+                a = a + 1
+                if a > 1:
+                    tv2.insert('', 'end', values=x)
 
-        def opiration(self):
-            opiration = input("Выберите операцию:")
-            if opiration == 'Таблица':
-                self.table()
-            elif opiration == 'Календарь':
-                self.calendar()
-            elif opiration == 'Статистика':
-                self.statistic()
-            elif opiration == 'Назад':
-                start()
-            else:
-                print('Операция неверно')
-                self.opiration()
+        tv2.place(x=100, y=320)
+        tv.place(x=100, y=40)
+        btn_back_2.config(command=self.back)
 
-        def table(self):
-            if self.name == 'la liga':
-                pass
-            elif self.name == 'epl':
-                pass
-            elif self.name == 'seria A':
-                pass
-            elif self.name == 'bundesliga':
-                pass
-            elif self.name == 'ligue 1':
-                pass
+window = Tk()
+window.geometry('800x600')
+window.title('ProFootball')
+window['bg'] = 'gray'
 
-        def calendar(self):
-            if self.name == 'la liga':
-                pass
-            elif self.name == 'epl':
-                pass
-            elif self.name == 'seria A':
-                pass
-            elif self.name == 'bundesliga':
-                pass
-            elif self.name == 'ligue 1':
-                pass
+btn_start_laliga = Button(window, text='LA LIGA', width=30, height=3, command=laliga)
+btn_start_seriaA = Button(window, text='SERIA A', width=30, height=3, command=seriaA)
+btn_start_epl = Button(window, text='EPL', width=30, height=3, command=epl)
+btn_start_ligue1 = Button(window, text='LIGUE 1', width=30, height=3, command=ligue1)
+btn_start_bundesliga = Button(window, text='BUNDESLIGA', width=30, height=3, command=bundesliga)
+btn_table = Button(window,text='TABLE', width=30, height=3, command='')
+btn_match = Button(window,text='MATCH', width=30, height=3, command='')
+btn_statistic = Button(window,text='STATISTIC', width=30, height=3, command='')
+btn_back = Button(window,text='BACK', width=30, height=3, command=start)
+btn_back_2 = Button(window,text='BACK', width=10, command='')
 
-        def statistic(self):
-            if self.name == 'la liga':
-                pass
-            elif self.name == 'epl':
-                pass
-            elif self.name == 'seria A':
-                pass
-            elif self.name == 'bundesliga':
-                pass
-            elif self.name == 'ligue 1':
-               pass
+lbl_table = Label(window, text='')
+lbl_statistic2 = Label(window, text='TOP ASSISTS')
+lbl_statistic1 = Label(window, text='TOP BOMBARDIER')
+lbl_match = Label(window, text='')
 
-    start()
+start()
+tv = ttk.Treeview(window, columns=(1, 2, 3), show='headings', height='10')
+tv2 = ttk.Treeview(window, columns=(1, 2, 3), show='headings', height='10')
+tv.heading(1, text='NAME')
+tv2.heading(1, text='NAME')
+tv.heading(2, text='ASSIST')
+tv2.heading(2, text='GOAL')
+tv.heading(3, text='GAME')
+tv2.heading(3, text='GAME')
+window.mainloop()
