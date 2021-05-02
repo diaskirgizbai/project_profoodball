@@ -1,7 +1,6 @@
 import urllib.request
 from bs4 import BeautifulSoup
 import csv
-import pandas as pd
 from tkinter import *
 from tkinter import ttk
 
@@ -156,7 +155,7 @@ def parsing_calendar(url, league_name):
             for y in range(10):
                 tur.append(x)
 
-    with open("calendar_" + league_name + ".csv", 'w+', newline='', encoding='utf-8') as file:
+    with open("calendar_" + league_name + ".csv", 'w+', newline='') as file:
         column_names = ['TUR', 'TEAM1', 'TEAM2', 'SCORE']
         wr = csv.DictWriter(file, fieldnames=column_names)
         wr.writerow({'TUR': 'TUR', 'TEAM1': 'TEAM1', 'TEAM2': 'TEAM2', 'SCORE': 'SCORE'})
@@ -251,7 +250,9 @@ class ProFootball:
         btn_start_ligue1.place_forget()
         btn_start_bundesliga.place_forget()
         btn_table.place(x=290, y=120)
+        btn_table.config(command=self.table)
         btn_match.place(x=290, y=210)
+        btn_match.config(command=self.match1)
         btn_statistic.place(x=290, y=300)
         btn_statistic.config(command=self.statistic)
         btn_back.place(x=290, y=390)
@@ -262,9 +263,35 @@ class ProFootball:
         btn_back_2.place_forget()
         tv2.place_forget()
         tv.place_forget()
+        tv_table.place_forget()#ALIHAN
         self.opiration()
         tv.delete(*tv.get_children())
         tv2.delete(*tv2.get_children())
+        btn_match3.place_forget()# ALIHAN
+        btn_match2.place_forget()
+        entry.place_forget()
+        lbl_match.place_forget()
+        lbl_match2.place_forget()
+        lbl_match3.place_forget()
+        lbl_match4.place_forget()
+        lbl_match5.place_forget()
+        l_box1.place_forget()
+        tv_table.delete(*tv_table.get_children())  #
+
+    def table(self):# ALIHAN
+        a = 0
+        btn_table.place_forget()
+        btn_match.place_forget()
+        btn_statistic.place_forget()
+        btn_back.place_forget()
+        btn_back_2.place(x=360, y=500)
+        with open('table_'+self.league+'.csv') as file:
+            for x in csv.reader(file):
+                a = a+1
+                if a > 1:
+                    tv_table.insert('', 'end', values=x)
+        tv_table.place(x=0, y=50)
+        btn_back_2.config(command=self.back)#
 
     def statistic(self):
         a=0
@@ -276,6 +303,7 @@ class ProFootball:
         lbl_statistic2.place(x=365, y=10)
         btn_back_2.place(x=10, y=10)
         with open('top_assists_'+self.league+'.csv') as file1:
+            a = 0
             for x in csv.reader(file1):
                 a = a+1
                 if a > 1:
@@ -290,6 +318,54 @@ class ProFootball:
         tv.place(x=100, y=40)
         btn_back_2.config(command=self.back)
 
+    def match1(self):  # Alihan
+        btn_table.place_forget()
+        btn_match.place_forget()
+        btn_statistic.place_forget()
+        btn_back.place_forget()
+        entry.place(x=305, y=220)
+        lbl_match.place(x=355, y=180)
+        btn_match2.place(x=360, y=310)
+        btn_back_2.place(x=10, y=10)
+        btn_back_2.config(command=self.back)
+        btn_match2.config(command=self.match2)
+
+    def match2(self):
+        team1 = []
+        team2 = []
+        self.tur = []
+        self.score = []
+        entry.place_forget()
+        lbl_match.place_forget()
+        btn_match2.config(command=self.match3)
+        name = open('calendar_' + self.league + '.csv')
+        read = csv.reader(name, delimiter=',')
+        data = list(read)
+        del (data[0])
+        for x in range(len(data)):
+            team1.append(data[x][1])
+        if entry.get() in team1:
+            l_box1.place(x=310, y=120)
+            for x, a in enumerate(team1):
+                if a == entry.get():
+                    self.tur.append(data[x][0])
+                    self.score.append(data[x][3])
+                    team2.append(data[x][2])
+                    team2_var = StringVar(value=team2)
+                    l_box1.config(listvariable=team2_var)
+        else:
+            self.match1()
+
+    def match3(self):
+        id = l_box1.curselection()[0]
+        lbl_match2.config(text=self.tur[id])
+        lbl_match3.config(text=self.score[id])
+        lbl_match2.place(x=420, y=360)
+        lbl_match3.place(x=420, y=390)
+        lbl_match4.place(x=360, y=360)
+        lbl_match5.place(x=360, y=390)
+        #
+
 window = Tk()
 window.geometry('800x600')
 window.title('ProFootball')
@@ -302,14 +378,20 @@ btn_start_ligue1 = Button(window, text='LIGUE 1', width=30, height=3, command=li
 btn_start_bundesliga = Button(window, text='BUNDESLIGA', width=30, height=3, command=bundesliga)
 btn_table = Button(window,text='TABLE', width=30, height=3, command='')
 btn_match = Button(window,text='MATCH', width=30, height=3, command='')
+btn_match2 = Button(window,text='SEARCH', width=10, height=1, command='')# Alihan
+btn_match3 = Button(window,text='SEARCH', width=10, height=1, command='')#
 btn_statistic = Button(window,text='STATISTIC', width=30, height=3, command='')
 btn_back = Button(window,text='BACK', width=30, height=3, command=start)
 btn_back_2 = Button(window,text='BACK', width=10, command='')
 
+lbl_match2 = Label(window, text='', bg='gray')# Alihan
+lbl_match3 = Label(window, text='', bg='gray')# Alihan
+lbl_match4 = Label(window, text='TUR:', bg='gray')# Alihan
+lbl_match5 = Label(window, text='SCORE:', bg='gray')# Alihan
 lbl_table = Label(window, text='')
 lbl_statistic2 = Label(window, text='TOP ASSISTS')
 lbl_statistic1 = Label(window, text='TOP BOMBARDIER')
-lbl_match = Label(window, text='')
+lbl_match = Label(window, text='CHOOSE TEAM')#Alihan
 
 start()
 tv = ttk.Treeview(window, columns=(1, 2, 3), show='headings', height='10')
@@ -320,4 +402,29 @@ tv.heading(2, text='ASSIST')
 tv2.heading(2, text='GOAL')
 tv.heading(3, text='GAME')
 tv2.heading(3, text='GAME')
+
+tv_table = ttk.Treeview(window, columns=(1, 2, 3, 4, 5, 6, 7, 8, 9), show='headings', height='20')#ALIHAN
+tv_table.heading(1, text='№')
+tv_table.heading(2, text='TEAM')
+tv_table.heading(3, text='PL')
+tv_table.heading(4, text='W')
+tv_table.heading(5, text='D')
+tv_table.heading(6, text='L')
+tv_table.heading(7, text='F')
+tv_table.heading(8, text='A')
+tv_table.heading(9, text='PTS')
+tv_table.column(1, width=90)
+tv_table.column(2, width=90)
+tv_table.column(3, width=90)
+tv_table.column(4, width=90)
+tv_table.column(5, width=90)
+tv_table.column(6, width=90)
+tv_table.column(7, width=90)
+tv_table.column(8, width=90)
+tv_table.column(9, width=90)#
+
+l_box1 = Listbox(window, listvariable='', width=30)# ALIHAN
+
+entry = Entry(window, width=30)#
+
 window.mainloop()
